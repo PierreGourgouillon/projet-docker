@@ -1,37 +1,36 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import API from "../api/axios.jsx";
 
 function ImageCard({ image }) {
-  const [likes, setLikes] = useState(0);
+  const [likes, setLikes] = useState(image.likes.length);
 
-  const handleLike = () => setLikes((prev) => prev + 1);
-  const handleDislike = () => setLikes((prev) => (prev > 0 ? prev - 1 : 0));
+  const handleLike = async () => {
+    try {
+      const response = await API.post(`/galleries/${image._id}/like`)
 
-  useEffect(() => {
-    const testApi = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/api/v1/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: 'pierre.gourgouillon@gmail.com',
-            password: 'pierrefdsjkdsf',
-          }),
-        });
-        const data = await response.json();
-        console.log('Fetch API response:', data);
-      } catch (error) {
-        console.error('Fetch API error:', error);
+      if (response.data.isLike !== null) {
+        setLikes(likes+1)
       }
-    };
-  
-    testApi();
-  }, []);  
+    } catch {
+    }
+  }
+
+  const handleUnlike = async () => {
+    try {
+      const response = await API.post(`/galleries/${image._id}/unlike`)
+
+      if (response.data.isUnlike !== null) {
+        setLikes(likes-1)
+      }
+    } catch {
+    }
+  }
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <img
-        src={image.src}
+        src={image.image}
         alt={image.title}
         className="w-full h-48 object-cover"
       />
@@ -45,7 +44,7 @@ function ImageCard({ image }) {
             Like
           </button>
           <button
-            onClick={handleDislike}
+            onClick={handleUnlike}
             className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
           >
             Dislike

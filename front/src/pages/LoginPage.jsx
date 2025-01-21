@@ -1,22 +1,24 @@
 import { useState } from 'react';
 import API from '../api/axios';
+import {redirect, useNavigate} from "react-router-dom";
 
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     try {
       const response = await API.post('/auth/login', { email, password });
-      console.log('Login successful:', response.data);
+      console.log(response)
+      if (response.status === 200) {
+        navigate("/")
+      }
     } catch (err) {
-        console.log(err)
-      console.error('Login failed:', err.response?.data?.message || err.message);
-      setError(err.response?.data?.message || 'Something went wrong');
-      console.log(email, password)
+        setError(err.response?.data?.message || 'Something went wrong');
     }
   };
 

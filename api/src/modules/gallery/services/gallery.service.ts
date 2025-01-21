@@ -42,7 +42,7 @@ export class GalleryService {
       );
     }
 
-    return false;
+    return null;
   }
 
   async unlikeGallery(galleryId: string, userId: string): Promise<boolean> {
@@ -60,6 +60,6 @@ export class GalleryService {
       );
     }
 
-    return false;
+    return null;
   }
 }
