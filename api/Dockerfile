@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # Expose le port sur lequel l'application écoute
-EXPOSE 4000
+EXPOSE 3000
 
 # Définit la commande par défaut pour lancer l'application
 CMD ["node", "dist/main"]
