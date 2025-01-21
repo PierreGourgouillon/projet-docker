@@ -6,6 +6,8 @@ services:
     ports:
       - "4000:80"
     restart: always
+    networks:
+      - app-network
 
   app:
     build:
@@ -21,6 +23,8 @@ services:
       - mongodb
     env_file:
       - API/.env
+    networks:
+      - app-network
     command: npm run start:dev
 
   mongodb:
@@ -35,6 +39,12 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
       MONGO_INITDB_DATABASE: nestjsdb
+    networks:
+      - app-network
 
 volumes:
   mongodb_data:
+
+networks:
+  app-network:
+    driver: bridge

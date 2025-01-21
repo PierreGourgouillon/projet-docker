@@ -8,8 +8,8 @@ import { HttpExceptionFilter } from 'src/common/filters/http.exception.filter';
 import * as process from 'process';
 
 async function bootstrap() {
-  const port = process.env.PORT || 4000;
-  const frontUrl = process.env.FRONT_URL || 'http://localhost:3000';
+  const port = process.env.PORT || 3000;
+  const frontUrl = process.env.FRONT_URL || 'http://localhost:4000';
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
 

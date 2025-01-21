@@ -19,11 +19,17 @@ RUN npm run build
 # Étape 2 : Serveur web pour servir les fichiers
 FROM nginx:alpine
 
+# Supprimer la config par défaut de NGINX
+RUN rm /etc/nginx/conf.d/default.conf
+
 # Copier les fichiers construits vers le dossier Nginx par défaut
 COPY --from=builder /front/dist /usr/share/nginx/html
 
 # Assurer les bonnes permissions
 RUN chmod -R 755 /usr/share/nginx/html
+
+# Copier votre fichier de configuration NGINX
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Exposer le port 80
 EXPOSE 80

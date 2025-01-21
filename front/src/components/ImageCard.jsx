@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 function ImageCard({ image }) {
@@ -6,6 +6,27 @@ function ImageCard({ image }) {
 
   const handleLike = () => setLikes((prev) => prev + 1);
   const handleDislike = () => setLikes((prev) => (prev > 0 ? prev - 1 : 0));
+
+  useEffect(() => {
+    const testApi = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/v1/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: 'pierre.gourgouillon@gmail.com',
+            password: 'pierrefdsjkdsf',
+          }),
+        });
+        const data = await response.json();
+        console.log('Fetch API response:', data);
+      } catch (error) {
+        console.error('Fetch API error:', error);
+      }
+    };
+  
+    testApi();
+  }, []);  
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
