@@ -17,6 +17,9 @@ export class AuthGuard implements CanActivate {
 
     const isUserExist =
       await this.authService.verifyIfUserIdExist(signedCookieValue);
+
+    request['userId'] = signedCookieValue;
+
     await this.authService.cookieGeneration(response, signedCookieValue);
 
     return isUserExist;
