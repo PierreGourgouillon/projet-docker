@@ -1,5 +1,5 @@
 services:
-  react-app:
+  front-app:
     build:
       context: ./front
       dockerfile: Dockerfile
@@ -7,13 +7,12 @@ services:
       - "4000:80"
     restart: always
     networks:
-      - app-network
+      - front-network
 
-  app:
+  api:
     build:
       context: ./API
       dockerfile: Dockerfile
-    container_name: nestjs-app
     ports:
       - '3000:3000'
     volumes:
@@ -24,7 +23,7 @@ services:
     env_file:
       - API/.env
     networks:
-      - app-network
+      - back-network
     command: npm run start:dev
 
   mongodb:
@@ -40,11 +39,13 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: password
       MONGO_INITDB_DATABASE: nestjsdb
     networks:
-      - app-network
+      - back-network
 
 volumes:
   mongodb_data:
 
 networks:
-  app-network:
+  front-network:
+    driver: bridge
+  back-network:
     driver: bridge
