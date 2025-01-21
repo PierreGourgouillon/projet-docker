@@ -1,13 +1,24 @@
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Header from './components/Header';
+import Gallery from './components/Gallery';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 
 function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <h1 className="text-4xl font-bold text-red-500">
-        Tailwind CSS est bien configuré !
-      </h1>
-    </div>
+    <Router>
+      <div className="bg-gray-50 min-h-screen w-screen">
+        <Header />
+        <main className="px-4 py-6">
+          <Routes>
+            <Route path="/" element={<Gallery />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+          </Routes>
+        </main>
+      </div>
+    </Router>
   );
 }
 
-export default App
+export default App;
