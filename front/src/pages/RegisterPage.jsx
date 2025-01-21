@@ -1,19 +1,24 @@
 import { useState } from 'react';
 import API from '../api/axios';
+import { useNavigate } from 'react-router-dom';
 
 function RegisterPage() {
-  const [name, setName] = useState('');
+  const [lastname, setLastname] = useState('');
+  const [firstname, setFirstname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // Réinitialise les erreurs
+    setError('');
 
     try {
-      const response = await API.post('/auth/register', { name, email, password });
+      const response = await API.post('/auth/register', { lastname, firstname, email, password });
       console.log('Registration successful:', response.data);
+      navigate("/login");
     } catch (err) {
       console.error('Registration failed:', err.response?.data?.message || err.message);
       setError(err.response?.data?.message || 'Something went wrong');
@@ -25,16 +30,29 @@ function RegisterPage() {
       <h2 className="text-2xl font-bold text-center text-blue-500">Sign Up</h2>
       <form className="mt-6" onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-            Name
+          <label htmlFor="lastname" className="block text-sm font-medium text-gray-700">
+            Lastname
           </label>
           <input
             type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            id="lastname"
+            value={lastname}
+            onChange={(e) => setLastname(e.target.value)}
             className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Enter your name"
+            placeholder="Enter your lastname"
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="firstname" className="block text-sm font-medium text-gray-700">
+            Firstname
+          </label>
+          <input
+            type="text"
+            id="firstname"
+            value={firstname}
+            onChange={(e) => setFirstname(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            placeholder="Enter your firstname"
           />
         </div>
         <div className="mb-4">
