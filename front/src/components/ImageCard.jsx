@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import API from "../api/axios.jsx";
 
@@ -60,6 +60,8 @@ ImageCard.propTypes = {
     image: PropTypes.shape({
       src: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
+      likes: PropTypes.array.isRequired,
+      _id: PropTypes.string.isRequired,
     }).isRequired,
   };
 
