@@ -42,10 +42,11 @@ export class AuthService {
   async cookieGeneration(response: Response, userId: string) {
     response.cookie('jwt', userId, {
       httpOnly: true,
-      secure: process.env.NODE_ENV == 'production',
+      secure: true,
+      sameSite: 'none',
       maxAge: 7200000, // Cookie valide pendant 2 heure,
       signed: true,
-      sameSite: 'strict',
+      domain: '.back-service-208091987949.europe-west9.run.app',
     });
   }
 

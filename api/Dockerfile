@@ -11,7 +11,5 @@ COPY . .
 
 RUN npm run build
 
-EXPOSE 3000
-
 # Définit la commande par défaut pour lancer l'application
 CMD ["node", "dist/main"]

@@ -11,7 +11,9 @@ function Gallery() {
     const loadGallery = async () => {
       setIsLoading(true);
       try {
-        const response = await API.get("/galleries/");
+        const response = await API.get("/galleries/", {
+          withCredentials: true,
+        });
         setGalleries(response.data.data);
         console.log(response.data);
       } catch (err) {
@@ -23,11 +25,14 @@ function Gallery() {
   }, []);
   return (
     <div className="container mx-auto">
+      {error && <div className="text-red-500">{error}</div>}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {isLoading ? (
           <div>Loading</div>
-        ) : (
+        ) : galleries && galleries.length > 0 ? (
           galleries.map((image) => <ImageCard key={image._id} image={image} />)
+        ) : (
+          <div>No images available</div>
         )}
       </div>
     </div>
