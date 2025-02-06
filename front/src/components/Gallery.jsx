@@ -11,8 +11,11 @@ function Gallery() {
     const loadGallery = async () => {
       setIsLoading(true);
       try {
+        const token = localStorage.getItem("JWT");
         const response = await API.get("/galleries/", {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         setGalleries(response.data.data);
         console.log(response.data);

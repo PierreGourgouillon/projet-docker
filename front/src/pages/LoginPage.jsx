@@ -15,6 +15,8 @@ function LoginPage() {
       const response = await API.post('/auth/login', { email, password });
       console.log(response)
       if (response.status === 200) {
+        localStorage.setItem("JWT", response.data.token.accessToken);
+        localStorage.setItem("REFRESH_TOKEN", response.data.token.refreshToken);
         navigate("/")
       }
     } catch (err) {
