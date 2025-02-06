@@ -15,9 +15,7 @@ async function bootstrap() {
 
   app.enableCors({
     origin: frontUrl,
-    credentials: true,
   });
-  app.use(cookieParser(config().cookieSecretKey));
 
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),

@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import {ApiBody, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
 import {GalleryService} from "../services/gallery.service";
-import {AuthGuard} from "src/common/guards/auth.guard";
+import {JwtAuthGuard} from "src/common/guards/jwt.auth.guard";
 import {LoginDto} from "../../auth/dto/auth.dto";
 import {Response} from "express";
 import {User} from "../../user/models/user.model";
@@ -19,7 +19,7 @@ import {GalleryDTO} from "../dto/gallery.dto";
 import {Gallery} from "../models/gallery.model";
 
 @ApiTags('Gallery')
-@UseGuards(AuthGuard)
+@UseGuards(JwtAuthGuard)
 @Controller({
   path: 'galleries',
   version: '1',
