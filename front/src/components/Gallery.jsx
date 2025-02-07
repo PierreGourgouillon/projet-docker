@@ -1,18 +1,21 @@
 import ImageCard from "./ImageCard";
 import { useEffect, useState } from "react";
 import API from "../api/axios.jsx";
-import { isAccessTokenExpired } from "../api/refreshToken.jsx";
+import { isAccessTokenExpired } from "../api/refreshToken.js";
+import {useNavigate} from "react-router-dom";
 
 function Gallery() {
   const [isLoading, setIsLoading] = useState(false);
   const [galleries, setGalleries] = useState([]);
   const [error, setError] = useState(null);
+  const navigate = useNavigate()
 
   useEffect(() => {
     const loadGallery = async () => {
       setIsLoading(true);
-
-      if (isAccessTokenExpired()) {
+      const token = localStorage.getItem("JWT");
+      console.log(isAccessTokenExpired(token))
+      if (isAccessTokenExpired(token)) {
         await refresh()
       }
 
@@ -35,9 +38,9 @@ function Gallery() {
       try {
         const refreshToken = localStorage.getItem("REFRESH_TOKEN");
         const response = await API.post("/auth/refresh", { refreshToken });
-        localStorage.setItem("JWT", response.accessToken)
+        localStorage.setItem("JWT", response.data.token.accessToken)
       } catch (err) {
-        setError(err.response?.data?.message || "Something went wrong");
+        navigate("/login")
       }
     }
 

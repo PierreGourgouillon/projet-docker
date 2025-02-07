@@ -49,11 +49,14 @@ export class GalleryService {
     const gallery = await this.galleryRepository.findOneById(galleryId);
     if (!gallery) throw new NotFoundException('Gallery not found');
 
-    const updatedLikes = gallery.likes.filter(
-        (id) => id.toString() !== userId.toString(),
+    // Vérification pour éviter les erreurs
+    const likes = Array.isArray(gallery.likes) ? gallery.likes : [];
+
+    const updatedLikes = likes.filter(
+        (id) => id?.toString() !== userId,
     );
 
-    if (updatedLikes.length !== gallery.likes.length) {
+    if (updatedLikes.length !== likes.length) {
       return this.galleryRepository.updateOneBy(
           { _id: galleryId },
           { likes: updatedLikes } as Partial<Gallery>,

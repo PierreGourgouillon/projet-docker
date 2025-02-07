@@ -5,18 +5,14 @@ import {
   HttpStatus,
   Param,
   Post, Req,
-  Res,
-  UnauthorizedException,
   UseGuards
 } from '@nestjs/common';
 import {ApiBody, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
 import {GalleryService} from "../services/gallery.service";
 import {JwtAuthGuard} from "src/common/guards/jwt.auth.guard";
-import {LoginDto} from "../../auth/dto/auth.dto";
-import {Response} from "express";
-import {User} from "../../user/models/user.model";
 import {GalleryDTO} from "../dto/gallery.dto";
 import {Gallery} from "../models/gallery.model";
+import { Request } from "express"
 
 @ApiTags('Gallery')
 @UseGuards(JwtAuthGuard)
@@ -63,9 +59,10 @@ export class GalleryController {
   @Post(':id/like')
   async likeGallery(
       @Param('id') galleryId: string,
-      @Req() request: Request
+      @Req() request: RequestWithUser
   ) {
-    const userId = request['userId'];
+    const user = request.user as any; // Typage correct pour éviter les erreurs
+    const userId = user.userId;
 
     const isLike = await this.galleryService.likeGallery(galleryId, userId);
 
@@ -82,12 +79,20 @@ export class GalleryController {
   @Post(':id/unlike')
   async unlikeGallery(
       @Param('id') galleryId: string,
-      @Req() request: Request
+      @Req() request: RequestWithUser
   ) {
-    const userId = request['userId'];
+    const user = request.user as any; // Typage correct pour éviter les erreurs
+    const userId = user.userId;
 
     const isUnlike = await this.galleryService.unlikeGallery(galleryId, userId);
 
     return { error: null, isUnlike: isUnlike }
   }
+}
+
+export interface RequestWithUser extends Request {
+  user: {
+    userId: string;
+    [key: string]: any; // Permet d'ajouter d'autres champs du JWT si nécessaire
+  };
 }

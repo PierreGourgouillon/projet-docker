@@ -1,9 +1,7 @@
-import jwtDecode from "jwt-decode"
+import { jwtDecode } from "jwt-decode"
 
-export const isAccessTokenExpired = () => {
+export const isAccessTokenExpired = (accessToken) => {
   try {
-    const accessToken = localStorage.getItem("JWT");
-
     if (!accessToken) {
       return true;
     }
