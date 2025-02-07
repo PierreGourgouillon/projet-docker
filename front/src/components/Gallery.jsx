@@ -11,6 +11,11 @@ function Gallery() {
   useEffect(() => {
     const loadGallery = async () => {
       setIsLoading(true);
+
+      if (isAccessTokenExpired()) {
+        await refresh()
+      }
+
       try {
         const token = localStorage.getItem("JWT");
         const response = await API.get("/galleries/", {
@@ -25,6 +30,17 @@ function Gallery() {
       }
       setIsLoading(false);
     };
+
+    const refresh = async () => {
+      try {
+        const refreshToken = localStorage.getItem("REFRESH_TOKEN");
+        const response = await API.post("/auth/refresh", { refreshToken });
+        localStorage.setItem("JWT", response.accessToken)
+      } catch (err) {
+        setError(err.response?.data?.message || "Something went wrong");
+      }
+    }
+
     loadGallery();
   }, []);
   return (
