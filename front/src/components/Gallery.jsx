@@ -1,6 +1,7 @@
 import ImageCard from "./ImageCard";
 import { useEffect, useState } from "react";
 import API from "../api/axios.jsx";
+import { isAccessTokenExpired } from "../api/refreshToken.jsx";
 
 function Gallery() {
   const [isLoading, setIsLoading] = useState(false);
