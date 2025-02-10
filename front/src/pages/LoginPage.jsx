@@ -1,26 +1,29 @@
-import { useState } from 'react';
-import API from '../api/axios';
-import {redirect, useNavigate} from "react-router-dom";
+import { useState, useContext } from "react";
+import API from "../api/axios";
+import { redirect, useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
 
 function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  const { login } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     try {
-      const response = await API.post('/auth/login', { email, password });
-      console.log(response)
+      const response = await API.post("/auth/login", { email, password });
+      console.log(response);
       if (response.status === 200) {
-        localStorage.setItem("JWT", response.data.token.accessToken);
         localStorage.setItem("REFRESH_TOKEN", response.data.token.refreshToken);
-        navigate("/")
+        login(response.data.token.accessToken);
+        navigate("/");
       }
     } catch (err) {
-        setError(err.response?.data?.message || 'Something went wrong');
+      setError(err.response?.data?.message || "Something went wrong");
     }
   };
 
@@ -29,7 +32,10 @@ function LoginPage() {
       <h2 className="text-2xl font-bold text-center text-blue-500">Login</h2>
       <form className="mt-6" onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700"
+          >
             Email
           </label>
           <input
@@ -42,7 +48,10 @@ function LoginPage() {
           />
         </div>
         <div className="mb-6">
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700"
+          >
             Password
           </label>
           <input

@@ -1,6 +1,10 @@
 import { Link } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from '../contexts/AuthContext';
 
 function Header() {
+  const { isAuthenticated } = useContext(AuthContext);
+
   return (
     <header className="bg-white shadow-md">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -9,16 +13,26 @@ function Header() {
         </h1>
         <nav>
           <ul className="flex space-x-4">
-            <li>
-              <Link to="/login" className="text-gray-600 hover:text-blue-500">
-                Login
-              </Link>
-            </li>
-            <li>
-              <Link to="/register" className="text-gray-600 hover:text-blue-500">
-                Sign Up
-              </Link>
-            </li>
+            {isAuthenticated ? (
+              <li>
+                <Link to="/account" className="text-gray-600 hover:text-blue-500">
+                  Mon compte
+                </Link>
+              </li>
+            ) : (
+              <>
+                <li>
+                  <Link to="/login" className="text-gray-600 hover:text-blue-500">
+                    Login
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/register" className="text-gray-600 hover:text-blue-500">
+                    Sign Up
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </nav>
       </div>

@@ -1,29 +1,38 @@
 import ImageCard from "./ImageCard";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import API from "../api/axios.jsx";
 import { isAccessTokenExpired } from "../api/refreshToken.js";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
 
 function Gallery() {
   const [isLoading, setIsLoading] = useState(false);
   const [galleries, setGalleries] = useState([]);
   const [error, setError] = useState(null);
-  const navigate = useNavigate()
+  
+  const navigate = useNavigate();
+
+  const { login, logout } = useContext(AuthContext);
 
   useEffect(() => {
     const loadGallery = async () => {
       setIsLoading(true);
+      
       const token = localStorage.getItem("JWT");
-      console.log(isAccessTokenExpired(token))
+      if (!token) {
+        setIsLoading(false);
+        return navigate("/login");
+      }
+
       if (isAccessTokenExpired(token)) {
-        await refresh()
+        await refresh();
       }
 
       try {
-        const token = localStorage.getItem("JWT");
+        const validToken = localStorage.getItem("JWT");
         const response = await API.get("/galleries/", {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${validToken}`,
           },
         });
         setGalleries(response.data.data);
@@ -31,6 +40,7 @@ function Gallery() {
       } catch (err) {
         setError(err.response?.data?.message || "Something went wrong");
       }
+
       setIsLoading(false);
     };
 
@@ -38,14 +48,20 @@ function Gallery() {
       try {
         const refreshToken = localStorage.getItem("REFRESH_TOKEN");
         const response = await API.post("/auth/refresh", { refreshToken });
-        localStorage.setItem("JWT", response.data.token.accessToken)
+        
+        const newToken = response.data.token.accessToken;
+
+        login(newToken);
+
       } catch (err) {
-        navigate("/login")
+        logout();
+        navigate("/login");
       }
-    }
+    };
 
     loadGallery();
-  }, []);
+  }, [navigate, login, logout]);
+
   return (
     <div className="container mx-auto">
       {error && <div className="text-red-500">{error}</div>}
