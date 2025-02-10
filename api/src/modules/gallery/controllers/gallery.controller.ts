@@ -1,18 +1,20 @@
 import {
   Body,
-  Controller, Get,
+  Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
-  Post, Req,
-  UseGuards
+  Post,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
-import {ApiBody, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
-import {GalleryService} from "../services/gallery.service";
-import {JwtAuthGuard} from "src/common/guards/jwt.auth.guard";
-import {GalleryDTO} from "../dto/gallery.dto";
-import {Gallery} from "../models/gallery.model";
-import { Request } from "express"
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { GalleryService } from '../services/gallery.service';
+import { JwtAuthGuard } from 'src/common/guards/jwt.auth.guard';
+import { GalleryDTO } from '../dto/gallery.dto';
+import { Gallery } from '../models/gallery.model';
+import { Request } from 'express';
 
 @ApiTags('Gallery')
 @UseGuards(JwtAuthGuard)
@@ -27,24 +29,26 @@ export class GalleryController {
   @Post('/')
   @ApiOperation({ summary: 'Gallery creation' })
   @ApiBody({ type: GalleryDTO })
-  @ApiResponse({ status: HttpStatus.OK, description: 'Created gallery successful' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Created gallery successful',
+  })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
     description: 'Invalid credentials',
   })
-  async create(
-      @Body() galleryDto: GalleryDTO,
-  ) {
-    const newGallery = await this.galleryService.createGallery(galleryDto)
+  async create(@Body() galleryDto: GalleryDTO) {
+    const newGallery = await this.galleryService.createGallery(galleryDto);
 
     return { error: null, data: newGallery };
   }
 
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get Galleries' })
-  @Get("/")
+  @Get('/')
   async getAll() {
-    const galleries = await this.galleryService.getAllGalleries() as Gallery[]
+    const galleries =
+      (await this.galleryService.getAllGalleries()) as Gallery[];
 
     return { error: null, data: galleries };
   }
@@ -58,15 +62,15 @@ export class GalleryController {
   })
   @Post(':id/like')
   async likeGallery(
-      @Param('id') galleryId: string,
-      @Req() request: RequestWithUser
+    @Param('id') galleryId: string,
+    @Req() request: RequestWithUser,
   ) {
     const user = request.user as any; // Typage correct pour éviter les erreurs
     const userId = user.userId;
 
     const isLike = await this.galleryService.likeGallery(galleryId, userId);
 
-    return { error: null, isLike: isLike }
+    return { error: null, isLike: isLike };
   }
 
   @HttpCode(HttpStatus.OK)
@@ -78,15 +82,15 @@ export class GalleryController {
   })
   @Post(':id/unlike')
   async unlikeGallery(
-      @Param('id') galleryId: string,
-      @Req() request: RequestWithUser
+    @Param('id') galleryId: string,
+    @Req() request: RequestWithUser,
   ) {
     const user = request.user as any; // Typage correct pour éviter les erreurs
     const userId = user.userId;
 
     const isUnlike = await this.galleryService.unlikeGallery(galleryId, userId);
 
-    return { error: null, isUnlike: isUnlike }
+    return { error: null, isUnlike: isUnlike };
   }
 }
 

@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "cloud": "npm run build:front && npm run push:front && npm run deploy:front",
+    "build:front": "docker buildx build --platform linux/amd64 -t europe-west9-docker.pkg.dev/nice-ripple-448808-i9/dev-cloud/frontend:latest .",
+    "push:front": "docker push europe-west9-docker.pkg.dev/nice-ripple-448808-i9/dev-cloud/frontend:latest",
+    "deploy:front": "gcloud run deploy front-service --image europe-west9-docker.pkg.dev/nice-ripple-448808-i9/dev-cloud/frontend:latest --platform managed --region europe-west9 --allow-unauthenticated"
   },
   "dependencies": {
     "axios": "^1.7.9",

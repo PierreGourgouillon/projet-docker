@@ -1,20 +1,21 @@
 import {
   BadRequestException,
   Injectable,
-  NotFoundException, UnauthorizedException,
+  NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { User } from 'src/modules/user/models/user.model';
 import { UserRepository } from 'src/modules/user/repositories/user.repository';
 import { RegisterDto } from 'src/modules/auth/dto/auth.dto';
 import * as bcrypt from 'bcryptjs';
-import {JwtService} from "@nestjs/jwt";
+import { JwtService } from '@nestjs/jwt';
 import config from 'src/configs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
-      private readonly userRepository: UserRepository,
-      private readonly jwtService: JwtService,
+    private readonly userRepository: UserRepository,
+    private readonly jwtService: JwtService,
   ) {}
 
   async generateRefreshToken(userId: string): Promise<string> {
@@ -33,13 +34,13 @@ export class AuthService {
   }
 
   async updateRefreshToken(
-      userId: string,
-      refreshToken: string,
+    userId: string,
+    refreshToken: string,
   ): Promise<boolean> {
     const hashedToken = await bcrypt.hash(refreshToken, 10);
     return await this.userRepository.updateOneBy(
-        { _id: userId },
-        { refreshToken: hashedToken },
+      { _id: userId },
+      { refreshToken: hashedToken },
     );
   }
 

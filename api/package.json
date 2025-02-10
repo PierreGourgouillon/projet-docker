@@ -18,7 +18,11 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "load-fixtures": "ts-node src/load-fixtures.ts"
+    "load-fixtures": "ts-node src/load-fixtures.ts",
+    "cloud": "npm run build:back && npm run push:back && npm run deploy:back",
+    "build:back": "docker buildx build --platform linux/amd64 -t europe-west9-docker.pkg.dev/nice-ripple-448808-i9/dev-cloud/backend:latest .",
+    "push:back": "docker push europe-west9-docker.pkg.dev/nice-ripple-448808-i9/dev-cloud/backend:latest",
+    "deploy:back": "gcloud run deploy back-service --image europe-west9-docker.pkg.dev/nice-ripple-448808-i9/dev-cloud/backend:latest --platform managed --region europe-west9 --allow-unauthenticated"
   },
   "dependencies": {
     "@faker-js/faker": "^8.4.1",

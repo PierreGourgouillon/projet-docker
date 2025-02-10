@@ -1,8 +1,12 @@
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
-import {GalleryRepository} from "../repositories/gallery.repository";
-import {GalleryDTO} from "../dto/gallery.dto";
-import {Gallery} from "../models/gallery.model";
-import {User} from "../../user/models/user.model";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { GalleryRepository } from '../repositories/gallery.repository';
+import { GalleryDTO } from '../dto/gallery.dto';
+import { Gallery } from '../models/gallery.model';
+import { User } from '../../user/models/user.model';
 
 @Injectable()
 export class GalleryService {
@@ -12,22 +16,22 @@ export class GalleryService {
     try {
       const { title, image } = parameters;
 
-      const newGallery = await this.galleryRepository.insert({
+      const newGallery = (await this.galleryRepository.insert({
         title: title,
-        image: image
-      }) as Gallery
+        image: image,
+      })) as Gallery;
 
-      return await this.galleryRepository.findOneById(newGallery._id)
+      return await this.galleryRepository.findOneById(newGallery._id);
     } catch {
-      throw new BadRequestException()
+      throw new BadRequestException();
     }
   }
 
   async getAllGalleries() {
     try {
-      return await this.galleryRepository.findAll()
+      return await this.galleryRepository.findAll();
     } catch {
-      throw new BadRequestException()
+      throw new BadRequestException();
     }
   }
 
@@ -36,10 +40,9 @@ export class GalleryService {
     if (!gallery) throw new NotFoundException('Gallery not found');
 
     if (!gallery.likes.includes(userId as any)) {
-      return this.galleryRepository.updateOneBy(
-          { _id: galleryId },
-          { likes: [...gallery.likes, userId] } as Partial<Gallery>,
-      );
+      return this.galleryRepository.updateOneBy({ _id: galleryId }, {
+        likes: [...gallery.likes, userId],
+      } as Partial<Gallery>);
     }
 
     return null;
@@ -52,15 +55,12 @@ export class GalleryService {
     // Vérification pour éviter les erreurs
     const likes = Array.isArray(gallery.likes) ? gallery.likes : [];
 
-    const updatedLikes = likes.filter(
-        (id) => id?.toString() !== userId,
-    );
+    const updatedLikes = likes.filter((id) => id?.toString() !== userId);
 
     if (updatedLikes.length !== likes.length) {
-      return this.galleryRepository.updateOneBy(
-          { _id: galleryId },
-          { likes: updatedLikes } as Partial<Gallery>,
-      );
+      return this.galleryRepository.updateOneBy({ _id: galleryId }, {
+        likes: updatedLikes,
+      } as Partial<Gallery>);
     }
 
     return null;
